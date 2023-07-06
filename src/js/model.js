@@ -2,8 +2,11 @@ class Model {
 
     constructor() {
 
-        // Array to store all products.
-        this.products = [];
+        // Array to store all products on local storage.
+        if (localStorage.length === 0) localStorage.setItem("products", JSON.stringify([]));
+
+        // Debug.
+        console.log(localStorage.getItem("products"));
     }
 
     // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
@@ -11,7 +14,12 @@ class Model {
     // -- Operations --
 
     // Add a product.
-    createProduct(productName) {
+    createProduct(productCode, productName) {
+
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
+
+        // Get access to localStorage items.
+        let products = JSON.parse(localStorage.getItem("products"));
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
@@ -20,19 +28,23 @@ class Model {
         // Create product object.
         let product = {
 
-            id: this.products.length,
+            id: products.length,
+            code: productCode,
             name: productName
         };
 
         // Add product to array.
-        this.products.push(product);
+        products.push(product);
+
+        // Save it again.
+        localStorage.setItem("products", JSON.stringify(products));
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
         // -- DEBUG --
 
         console.log(product);
-        console.log(this.products);
+        console.log(products);
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
     }
@@ -40,16 +52,23 @@ class Model {
     // Removes a product based on its ID, using a filter function.
     deleteProduct(id) {
 
-        this.products = this.products.filter((product) => {
+        // Get access to localStorage items.
+        let products = JSON.parse(localStorage.getItem("products"));
+
+        // Use a filter function to remove product.
+        products = products.filter((product) => {
 
             return id !== product.id;
         });
+
+        // Save changes.
+        localStorage.setItem("products", JSON.stringify(products));
     }
 
     // Get all products.
     getProducts() {
 
-        return this.products;
+        return JSON.parse(localStorage.getItem("products"));
     }
 
     // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 

@@ -4,6 +4,8 @@ class Controller {
 
         this.model = model;
         this.view = view;
+
+        this.view.renderProductsList(this.model.getProducts());
     }
 
     // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
@@ -11,15 +13,18 @@ class Controller {
     // -- OPERATIONS --
 
     // Add a product.
-    createProduct(productName) {
+    createProduct(productCode, productName) {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
         // -- VALIDATIONS --
 
-        // Check if input isn't empty.
+        // Check if inputs are empty.
+        if (productCode.trim() === "") return;
         if (productName.trim() === "") return;
 
+        // Remove spaces from code.
+        productCode = productCode.replaceAll(" ", "");
         // Make all products lower-case.
         productName = productName.toLowerCase();
 
@@ -27,7 +32,7 @@ class Controller {
 
         // -- SAVE DATA AND UPDATE DISPLAY --
 
-        this.model.createProduct(productName);
+        this.model.createProduct(productCode, productName);
         this.view.renderProductsList(this.model.getProducts());
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 

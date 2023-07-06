@@ -1,6 +1,77 @@
+/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
+
 /* General Settings */
 * {
     margin: 0;
     padding: 0;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
+
+/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
+
+/* Products Menu */
+#products-menu {
+    border: 1px solid black;
+    border-radius: 6px;
+    width: 50%;
+    margin: 10px auto;
+    padding: 10px;
+    text-align: center;
+}
+
+#product-code-input,
+#product-name-input {
+    margin: 4px;
+    padding: 4px;
+    text-align: center;
+}
+
+#product-btn {
+    margin: 4px;
+    padding: 4px;
+}
+
+/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
+
+/* Products List */
+#products-list-container {
+    border: 1px solid black;
+    border-radius: 6px;
+    width: 50%;
+    margin: 10px auto;
+    padding: 10px;
+    text-align: center;
+    overflow: auto;
+}
+
+#products-container {
+    width: 100%;
+}
+
+#products-container tr {
+    border: 1px solid red;
+}
+
+#products-container tr td {
+    border: 1px solid black;
+}
+
+/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
+
+/* Items from product list */
+.products-list-item {
+    border: 1px solid black;
+    border-radius: 6px;
+    margin: 8px;
+    padding: 4px;
+}
+
+.products-list-item p {
+    font-size: 18px;
+}
+
+.products-list-item button {
+    padding: 4px;
+}
+
+/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
