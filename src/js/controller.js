@@ -13,7 +13,7 @@ class Controller {
     // -- OPERATIONS --
 
     // Add a product.
-    createProduct(productCode, productName) {
+    createProduct(productCode, productName, productPrice) {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
@@ -32,7 +32,7 @@ class Controller {
 
         // -- SAVE DATA AND UPDATE DISPLAY --
 
-        this.model.createProduct(productCode, productName);
+        this.model.createProduct(productCode, productName, productPrice);
         this.view.renderProductsList(this.model.getProducts());
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 

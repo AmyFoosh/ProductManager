@@ -14,7 +14,7 @@ class Model {
     // -- Operations --
 
     // Add a product.
-    createProduct(productCode, productName) {
+    createProduct(productCode, productName, productPrice) {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
@@ -30,6 +30,7 @@ class Model {
 
             id: products.length,
             code: productCode,
+            price: productPrice,
             name: productName
         };
 

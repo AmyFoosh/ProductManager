@@ -19,8 +19,7 @@
     text-align: center;
 }
 
-#product-code-input,
-#product-name-input {
+.products-input {
     margin: 4px;
     padding: 4px;
     text-align: center;
@@ -29,6 +28,12 @@
 #product-btn {
     margin: 4px;
     padding: 4px;
+}
+
+.table-head-item {
+    margin: 4px;
+    padding: 4px;
+    font-size: 20px;
 }
 
 /* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
