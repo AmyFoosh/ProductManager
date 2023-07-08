@@ -13,7 +13,7 @@ class Controller {
     // -- OPERATIONS --
 
     // Add a product.
-    createProduct(productCode, productName, productPrice) {
+    createProduct(productCode, productName, productPrice, productCategory) {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
@@ -22,6 +22,7 @@ class Controller {
         // Check if inputs are empty.
         if (productCode.trim() === "") return;
         if (productName.trim() === "") return;
+        if (productPrice.trim() === "") return;
 
         // Remove spaces from code.
         productCode = productCode.replaceAll(" ", "");
@@ -32,7 +33,7 @@ class Controller {
 
         // -- SAVE DATA AND UPDATE DISPLAY --
 
-        this.model.createProduct(productCode, productName, productPrice);
+        this.model.createProduct(productCode, productName, productPrice, productCategory);
         this.view.renderProductsList(this.model.getProducts());
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 

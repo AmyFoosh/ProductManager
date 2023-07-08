@@ -10,6 +10,7 @@ class View {
         this.productCodeInput = document.getElementById("product-code-input");
         this.productNameInput = document.getElementById("product-name-input");
         this.productPriceInput = document.getElementById("product-price-input");
+        this.productCategorySelect = document.getElementById("product-category-select");
         this.productBtn = document.getElementById("product-btn");
 
         // Display list.
@@ -46,12 +47,17 @@ class View {
 
     addProduct() {
 
-        app.createProduct(this.productCodeInput.value, this.productNameInput.value,
-            this.productPriceInput.value);
+        app.createProduct(
+            this.productCodeInput.value,
+            this.productNameInput.value,
+            this.productPriceInput.value,
+            this.productCategorySelect.value
+        );
 
         this.productCodeInput.value = "";
         this.productNameInput.value = "";
         this.productPriceInput.value = "";
+        this.productCategorySelect.selectedIndex = 0;
     }
 
     // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
@@ -80,23 +86,26 @@ class View {
         let thCode = document.createElement("th");
         let thName = document.createElement("th");
         let thPrice = document.createElement("th");
+        let thCategory = document.createElement("th");
         let thActions = document.createElement("th");
 
         // Create buttons for each col.
         let thCodeBtn = document.createElement("button");
         let thNameBtn = document.createElement("button");
         let thPriceBtn = document.createElement("button");
+        let thCategoryBtn = document.createElement("button");
 
         thCodeBtn.classList.add("table-head-item");
         thNameBtn.classList.add("table-head-item");
         thPriceBtn.classList.add("table-head-item");
+        thCategoryBtn.classList.add("table-head-item");
         thActions.classList.add("table-head-item");
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
         // -- ADD LISTENERS --
 
-        // Sort using code.
+        // Sort using code. NUMBER
         thCodeBtn.addEventListener("click", (e) => {
 
             // If array is empty, don't sort.
@@ -120,7 +129,7 @@ class View {
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
-        // Sort using name.
+        // Sort using name. STRING
         thNameBtn.addEventListener("click", (e) => {
 
             // If array is empty, don't sort.
@@ -146,7 +155,7 @@ class View {
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
-        // Sort using price.
+        // Sort using price. NUMBER
         thPriceBtn.addEventListener("click", (e) => {
 
             // If array is empty, don't sort.
@@ -170,22 +179,50 @@ class View {
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
+        // Sort using category. STRING
+        thCategoryBtn.addEventListener("click", (e) => {
+
+            // If array is empty, don't sort.
+            if (this.products.length === 0) return;
+
+            // Sort array.
+            if (this.sortModeAlphabetical) {
+
+                this.products.sort((a, b) => {
+
+                    if (a.category < b.category) return - 1;
+                    if (a.category > b.category) return 1;
+                    return 0;
+                });
+
+            } else {
+
+                this.products.reverse();
+            }
+
+            // Update array.
+            this.renderProductsList(this.products);
+            this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
+        });
+
         // Set values for buttons.
         thCodeBtn.innerText = "Code";
         thNameBtn.innerText = "Product";
         thPriceBtn.innerText = "Price";
-
+        thCategoryBtn.innerText = "Category";
         thActions.innerText = "Actions";
 
         // Add buttons to cols.
         thCode.appendChild(thCodeBtn);
         thName.appendChild(thNameBtn);
         thPrice.appendChild(thPriceBtn);
+        thCategory.appendChild(thCategoryBtn);
 
         // Create items.
         trHead.appendChild(thCode);
         trHead.appendChild(thName);
         trHead.appendChild(thPrice);
+        trHead.appendChild(thCategory);
         trHead.appendChild(thActions);
 
         tHead.appendChild(trHead);
@@ -196,33 +233,38 @@ class View {
 
             // Create HTML elements.
             let tr = document.createElement("tr");
+
             let tdCode = document.createElement("td");
-            let tdName = document.createElement("td");
+            let tdProduct = document.createElement("td");
             let tdPrice = document.createElement("td");
-            let tdButton = document.createElement("td");
-            let button = document.createElement("button");
+            let tdCategory = document.createElement("td");
+            let tdActions = document.createElement("td");
+
+            let actionsBtn = document.createElement("button");
 
             // Add CSS class for styling.
             tr.classList.add("products-list-item");
 
             // Set data and values.
             tdCode.innerText = `${product.code}`;
-            tdName.innerText = `${product.name}`;
+            tdProduct.innerText = `${product.name}`;
             tdPrice.innerText = `${product.price}`;
-            button.innerText = "Delete";
+            tdCategory.innerText = `${product.category}`;
+            actionsBtn.innerText = "Delete";
 
             // Create items.
-            tdButton.appendChild(button);
+            tdActions.appendChild(actionsBtn);
             tr.appendChild(tdCode);
-            tr.appendChild(tdName);
+            tr.appendChild(tdProduct);
             tr.appendChild(tdPrice);
-            tr.appendChild(tdButton);
+            tr.appendChild(tdCategory);
+            tr.appendChild(tdActions);
 
             // Add item to list.
             this.productsList.appendChild(tr);
 
             // Add listener to delete products.
-            button.addEventListener("click", (e) => {
+            actionsBtn.addEventListener("click", (e) => {
 
                 app.deleteProduct(product.id);
             });

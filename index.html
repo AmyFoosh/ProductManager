@@ -27,33 +27,59 @@
 
     <!-- // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- // -->
 
-    <!-- Add Product Menu -->
-    <div id="products-menu">
+    <!-- App Container -->
+    <div id="app-container">
 
-        <h1>Add Product</h1>
-        <input id="product-code-input" class="products-input" type="text" placeholder="Code">
-        <br>
-        <input id="product-name-input" class="products-input" type="text" placeholder="Product Name">
-        <br>
-        <input id="product-price-input" class="products-input" type="text" placeholder="Price">
-        <br>
+        <!-- Products Menu -->
+        <div id="products-menu-container">
 
-        <button id="product-btn">Add Product</button>
+            <!-- Add Products Menu -->
+            <div id="add-product-container">
 
-    </div>
+                <h1>Add Product</h1>
 
-    <!-- // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- // -->
+                <input id="product-code-input" class="product-menu-item" type="text" placeholder="Code">
+                <br>
+                <input id="product-name-input" class="product-menu-item" type="text" placeholder="Name">
+                <br>
+                <input id="product-price-input" class="product-menu-item" type="text" placeholder="Price">
+                <br>
+                <select id="product-category-select" class="product-menu-item" name="" id="">
+                    <option value="unlabeled">Unlabeled</option>
+                    <option value="toys">Toys</option>
+                    <option value="kitchen">Kitchen</option>
+                    <option value="garden">Garden</option>
+                    <option value="bathroom">Bathroom</option>
+                    <option value="bedroom">Bedroom</option>
+                    <option value="fishing">Fishing</option>
+                    <option value="food">Food</option>
+                    <option value="lights">Lights</option>
+                </select>
+                <br>
+                <button id="product-btn" class="product-menu-item">Add Product</button>
+            </div>
 
-    <!-- Products List -->
-    <div id="products-list-container">
+            <!-- Search Products Menu -->
+            <div id="search-product-container">
+                <h1>Search Product</h1>
+                <input class="product-menu-item" type="text" placeholder="Product value">
+            </div>
 
-        <div>
-            <h1>Products List</h1>
         </div>
 
-        <table id="products-container">
+        <!-- Products List -->
+        <div id="products-list-container">
 
-        </table>
+            <div>
+                <h1>Products List</h1>
+            </div>
+
+            <!-- Here all products are loaded -->
+            <table id="products-container">
+
+            </table>
+
+        </div>
 
     </div>
 

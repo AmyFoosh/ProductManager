@@ -1,82 +1,85 @@
 /* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
 
-/* General Settings */
+/* -- GENERAL SETTINGS -- */
+
 * {
     margin: 0;
     padding: 0;
+    user-select: none;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
+table {
+    border: 1px solid black;
+}
+
 /* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
 
-/* Products Menu */
-#products-menu {
-    border: 1px solid black;
-    border-radius: 6px;
-    width: 50%;
-    margin: 10px auto;
+/* -- APP CONTAINER -- */
+
+#app-container {
+    border: 1px solid #000000;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+}
+
+/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
+
+/* -- PRODUCTS MENU -- */
+
+#products-menu-container {
+    border: 1px solid red;
+    margin: 10px;
     padding: 10px;
-    text-align: center;
 }
 
-.products-input {
+#add-product-container,
+#search-product-container {
+    border: 1px solid green;
     margin: 4px;
     padding: 4px;
-    text-align: center;
 }
 
-#product-btn {
-    margin: 4px;
+.product-menu-item {
     padding: 4px;
+    margin: 4px;
+    text-align: center;
+    font-size: 16px;
+}
+
+/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
+
+/* -- PRODUCTS LIST -- */
+
+@media screen and (max-width: 600px) {
+    
+    #products-list-container {
+        width: 100%;
+        overflow: scroll;
+    }
+
+    #products-list-container table {
+        width: 100%;
+    }
+}
+
+#products-list-container {
+    border: 1px solid red;
+    padding: 10px;
 }
 
 .table-head-item {
-    margin: 4px;
-    padding: 4px;
-    font-size: 20px;
-}
-
-/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
-
-/* Products List */
-#products-list-container {
-    border: 1px solid black;
-    border-radius: 6px;
-    width: 50%;
-    margin: 10px auto;
-    padding: 10px;
-    text-align: center;
-    overflow: auto;
-}
-
-#products-container {
-    width: 100%;
-}
-
-#products-container tr {
-    border: 1px solid red;
-}
-
-#products-container tr td {
-    border: 1px solid black;
-}
-
-/* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */
-
-/* Items from product list */
-.products-list-item {
-    border: 1px solid black;
-    border-radius: 6px;
-    margin: 8px;
-    padding: 4px;
-}
-
-.products-list-item p {
     font-size: 18px;
+    padding: 4px;
+    margin: 4px;
 }
 
-.products-list-item button {
+td {
+    font-size: 18px;
     padding: 4px;
+    border: 1px solid black;
 }
 
 /* ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- */

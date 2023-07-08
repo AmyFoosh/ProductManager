@@ -14,7 +14,7 @@ class Model {
     // -- Operations --
 
     // Add a product.
-    createProduct(productCode, productName, productPrice) {
+    createProduct(productCode, productName, productPrice, productCategory) {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
@@ -30,8 +30,9 @@ class Model {
 
             id: products.length,
             code: productCode,
+            name: productName,
             price: productPrice,
-            name: productName
+            category: productCategory
         };
 
         // Add product to array.
