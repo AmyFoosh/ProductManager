@@ -49,7 +49,8 @@ table {
     padding: 12px;
 }
 
-#add-product-container button {
+#add-product-container button,
+#search-product-container button {
     font-size: 18px;
     padding: 8px;
     background-color: lightsteelblue;
@@ -59,7 +60,8 @@ table {
     transition-timing-function: ease-in;
 }
 
-#add-product-container button:Hover {
+#add-product-container button:Hover,
+#search-product-container button:Hover {
     border: 2px solid rgb(200, 200, 200);
     background-color: lightslategray;
 }
