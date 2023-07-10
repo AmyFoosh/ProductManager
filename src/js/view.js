@@ -26,8 +26,9 @@ class View {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
-        // This is a temporary list used to filter products.
-        this.products = [];
+        // These are temporary lists used to filter products.
+        this.productsTemporary = [];
+        this.productsFiltered = [];
         this.sortModeAlphabetical = true;
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
@@ -65,12 +66,18 @@ class View {
             // Load entire list again if value is "all".
             if (categorySelected === "all") {
 
-                this.renderProductsList(this.products, false);
+                // Refresh products filtered array.
+                this.productsFiltered = this.productsTemporary.slice(0);
+
+                // Render products filtered array.
+                this.renderProductsList(this.productsFiltered, false);
+                console.log("Products filtered.");
+                console.log(this.productsFiltered);
                 return;
             }
 
             // Filter items based on category selected if value isn't "all".
-            let arr = this.products.filter((product) => {
+            this.productsFiltered = this.productsTemporary.filter((product) => {
 
                 console.log(product.category);
 
@@ -79,7 +86,11 @@ class View {
             });
 
             // Render list with all mathces.
-            this.renderProductsList(arr, false);
+            this.renderProductsList(this.productsFiltered, false);
+            console.log("Products filtered.");
+            console.log(this.productsFiltered);
+            console.log("Products temporary.");
+            console.log(this.productsTemporary);
         });
 
         // Clear fields on search product menu.
@@ -90,7 +101,8 @@ class View {
             this.searchCategorySelect.selectedIndex = 0;
 
             // Reload list.
-            this.renderProductsList(this.products);
+            this.productsFiltered = this.productsTemporary.slice(0);
+            this.renderProductsList(this.productsFiltered, false);
         });
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
@@ -217,8 +229,11 @@ class View {
         // -- CREATING TABLE HEAD ELEMENTS --
 
         // Add changes to temporary list.
-        if (updateList) this.products = products;
-        console.log(this.products);
+        if (updateList) {
+            this.productsTemporary = products.slice(0);
+            this.productsFiltered = products.slice(0);
+        }
+        console.log(this.productsTemporary);
 
         // Clear entire list.
         this.productsList.innerHTML = "";
@@ -254,23 +269,27 @@ class View {
         thCodeBtn.addEventListener("click", (e) => {
 
             // If array is empty, don't sort.
-            if (this.products.length === 0) return;
+            if (this.productsFiltered.length === 0) {
+
+                console.log("LIST IS EMPTY");
+                return;
+            }
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                this.products.sort((a, b) => {
+                this.productsFiltered.sort((a, b) => {
 
                     return a.code - b.code;
                 });
 
             } else {
 
-                this.products.reverse();
+                this.productsFiltered.reverse();
             }
 
             // Update array.
-            this.renderProductsList(this.products);
+            this.renderProductsList(this.productsFiltered, false);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
@@ -278,12 +297,12 @@ class View {
         thNameBtn.addEventListener("click", (e) => {
 
             // If array is empty, don't sort.
-            if (this.products.length === 0) return;
+            if (this.productsFiltered.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                this.products.sort((a, b) => {
+                this.productsFiltered.sort((a, b) => {
 
                     if (a.name < b.name) return - 1;
                     if (a.name > b.name) return 1;
@@ -292,11 +311,11 @@ class View {
 
             } else {
 
-                this.products.reverse();
+                this.productsFiltered.reverse();
             }
 
             // Update array.
-            this.renderProductsList(this.products);
+            this.renderProductsList(this.productsFiltered, false);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
@@ -304,23 +323,23 @@ class View {
         thPriceBtn.addEventListener("click", (e) => {
 
             // If array is empty, don't sort.
-            if (this.products.length === 0) return;
+            if (this.productsFiltered.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                this.products.sort((a, b) => {
+                this.productsFiltered.sort((a, b) => {
 
                     return a.price - b.price;
                 });
 
             } else {
 
-                this.products.reverse();
+                this.productsFiltered.reverse();
             }
 
             // Update array.
-            this.renderProductsList(this.products);
+            this.renderProductsList(this.productsFiltered, false);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
@@ -328,12 +347,12 @@ class View {
         thCategoryBtn.addEventListener("click", (e) => {
 
             // If array is empty, don't sort.
-            if (this.products.length === 0) return;
+            if (this.productsFiltered.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                this.products.sort((a, b) => {
+                this.productsFiltered.sort((a, b) => {
 
                     if (a.category < b.category) return - 1;
                     if (a.category > b.category) return 1;
@@ -342,11 +361,11 @@ class View {
 
             } else {
 
-                this.products.reverse();
+                this.productsFiltered.reverse();
             }
 
             // Update array.
-            this.renderProductsList(this.products);
+            this.renderProductsList(this.productsFiltered, false);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 

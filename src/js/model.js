@@ -6,7 +6,7 @@ class Model {
         if (localStorage.length === 0) localStorage.setItem("products", JSON.stringify([]));
 
         // Debug.
-        console.log(localStorage.getItem("products"));
+        // console.log(localStorage.getItem("products"));
     }
 
     // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
@@ -45,8 +45,8 @@ class Model {
 
         // -- DEBUG --
 
+        console.log("Added:");
         console.log(product);
-        console.log(products);
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
     }
