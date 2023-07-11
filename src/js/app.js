@@ -2,6 +2,6 @@ let app;
 
 addEventListener("DOMContentLoaded", (e) => {
 
-    app = new Controller(new Model(), new View2());
+    app = new Controller(new Model(), new View());
 });
 

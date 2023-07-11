@@ -4,6 +4,13 @@ class View {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
+        // -- TEMPORARY LIST --
+
+        this.productsListTemporary = [];
+        this.sortModeAlphabetical = true;
+
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
+
         // -- LOAD HTML ELEMENTS --
 
         // Access to elements on Add Product.
@@ -18,18 +25,12 @@ class View {
         this.searchCategorySelect = document.getElementById("search-category-select");
         this.clearBtn = document.getElementById("clear-btn");
 
+        // Load options on select.
         this.addCategoryItems(this.productCategorySelect);
         this.addCategoryItems(this.searchCategorySelect);
 
-        // Display list.
+        // Access to display list.
         this.productsList = document.getElementById("products-container");
-
-        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
-
-        // These are temporary lists used to filter products.
-        this.productsTemporary = [];
-        this.productsFiltered = [];
-        this.sortModeAlphabetical = true;
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
@@ -51,46 +52,20 @@ class View {
             if (e.ctrlKey && e.key === "s") e.preventDefault();
         });
 
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
+
         // -- ADD LISTENERS (for search product) --
 
-        // Filter product by its category.
+        // Input search filter.
+        this.searchCategoryInput.addEventListener("input", (e) => {
+
+            this.loadFilteredList();
+        });
+
+        // Selected item on select.
         this.searchCategorySelect.addEventListener("change", (e) => {
 
-            // Get category value.
-            let categorySelected =
-                this.searchCategorySelect.options
-                [this.searchCategorySelect.selectedIndex].value;
-
-            console.log("Category: " + categorySelected);
-
-            // Load entire list again if value is "all".
-            if (categorySelected === "all") {
-
-                // Refresh products filtered array.
-                this.productsFiltered = this.productsTemporary.slice(0);
-
-                // Render products filtered array.
-                this.renderProductsList(this.productsFiltered, false);
-                console.log("Products filtered.");
-                console.log(this.productsFiltered);
-                return;
-            }
-
-            // Filter items based on category selected if value isn't "all".
-            this.productsFiltered = this.productsTemporary.filter((product) => {
-
-                console.log(product.category);
-
-                // Return value in case of match.
-                if (product.category === categorySelected) return product;
-            });
-
-            // Render list with all mathces.
-            this.renderProductsList(this.productsFiltered, false);
-            console.log("Products filtered.");
-            console.log(this.productsFiltered);
-            console.log("Products temporary.");
-            console.log(this.productsTemporary);
+            this.loadFilteredList();
         });
 
         // Clear fields on search product menu.
@@ -101,8 +76,7 @@ class View {
             this.searchCategorySelect.selectedIndex = 0;
 
             // Reload list.
-            this.productsFiltered = this.productsTemporary.slice(0);
-            this.renderProductsList(this.productsFiltered, false);
+            this.renderProductsList(this.productsListTemporary, false);
         });
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
@@ -196,6 +170,10 @@ class View {
 
     addProduct() {
 
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+        // -- ADD NEW PRODUCT --
+
         // Call function to create product.
         app.createProduct(
             this.productCodeInput.value,
@@ -210,66 +188,157 @@ class View {
         this.productPriceInput.value = "";
         this.productCategorySelect.selectedIndex = 0;
 
-        // Clear values for Search Product menu.
-        this.searchCategoryInput.value = "";
-        this.searchCategorySelect.selectedIndex = 0;
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+        this.loadFilteredList();
+
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
     }
 
-    // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
-
-    // -- OPERATIONS --
-
-    // Load all products stored.
-    renderProductsList(products, updateList = true) {
-
-        console.log("updateList: " + updateList);
+    loadFilteredList() {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
-        // -- CREATING TABLE HEAD ELEMENTS --
+        // -- FILTER BY SELECT OPTION CHOOSED --
 
-        // Add changes to temporary list.
-        if (updateList) {
-            this.productsTemporary = products.slice(0);
-            this.productsFiltered = products.slice(0);
+        // List that will have all filters.
+        let filteredList;
+
+        // Get selected item category.
+        let selectedItemCategory =
+            this.searchCategorySelect.options
+            [this.searchCategorySelect.selectedIndex].value;
+
+        // Load all products.
+        if (selectedItemCategory === "all") {
+
+            console.log("Load all items");
+
+            filteredList = this.productsListTemporary.slice(0);
+
+        } else {
+
+            // In case "all" no match, filter specific category.
+            filteredList = this.productsListTemporary.filter((product) => {
+
+                if (selectedItemCategory === product.category) {
+
+                    console.log("Match: " + product.category);
+                    return product;
+
+                } else {
+
+                    console.log("No match: " + product.category);
+                }
+            });
         }
-        console.log(this.productsTemporary);
 
-        // Clear entire list.
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
+
+        // -- FILTER BY INPUT --
+
+        filteredList = filteredList.filter((product) => {
+
+            // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
+
+            // -- FILTER ALL ITEMS --
+
+            // If search field is empty, add all items.
+            if (this.searchCategoryInput.value === "") return product;
+
+             // Get Search input value.
+             let inputValue = this.searchCategoryInput.value.toLowerCase();
+
+            // -- FILTER BY CODE --
+
+            if (product.code.includes(inputValue)) return product;
+
+            // -- FILTER BY NAME --
+
+            if (product.name.includes(inputValue)) return product;
+
+            // -- FILTER BY PRICE --
+
+            if (product.price.includes(inputValue)) return product;
+        });
+
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
+
+        // Update list.
+        this.renderProductsList(filteredList, false);
+
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
+    }
+
+    renderProductsList(productsList, updateList = true) {
+
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+        // -- UPDATE LIST IN CASE updateList IS TRUE --
+
+        if (updateList) this.productsListTemporary = productsList.slice(0);
+
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+        // -- CLEAR VALUES --
+
+        console.log("Rendering product list.");
+
+        // Clear products list HTML.
         this.productsList.innerHTML = "";
 
-        // Create table elements.
-        let tHead = document.createElement("thead");
-        let trHead = document.createElement("tr");
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-        // Create cols.
-        let thCode = document.createElement("th");
-        let thName = document.createElement("th");
-        let thPrice = document.createElement("th");
-        let thCategory = document.createElement("th");
-        let thActions = document.createElement("th");
+        // -- ADDING LIST HEADER ITEMS --
 
-        // Create buttons for each col.
-        let thCodeBtn = document.createElement("button");
-        let thNameBtn = document.createElement("button");
-        let thPriceBtn = document.createElement("button");
-        let thCategoryBtn = document.createElement("button");
+        // Create filter elements.
+        let tr = document.createElement("tr");
 
-        thCodeBtn.classList.add("table-head-item");
-        thNameBtn.classList.add("table-head-item");
-        thPriceBtn.classList.add("table-head-item");
-        thCategoryBtn.classList.add("table-head-item");
-        thActions.classList.add("table-head-item");
+        // Create cols items.
+        let tdCode = document.createElement("td");
+        let tdName = document.createElement("td");
+        let tdPrice = document.createElement("td");
+        let tdCategory = document.createElement("td");
+        let tdActions = document.createElement("td");
 
-        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
+        // Add buttons
+        let tdCodeButton = document.createElement("button");
+        let tdNameButton = document.createElement("button");
+        let tdPriceButton = document.createElement("button");
+        let tdCategoryButton = document.createElement("button");
 
-        // -- ADD LISTENERS --
+        // Set cols values.
+        tdCodeButton.innerText = "Code";
+        tdNameButton.innerText = "Name";
+        tdPriceButton.innerText = "Price";
+        tdCategoryButton.innerText = "Category";
+        tdActions.innerHTML = "Actions";
 
-        // Sort using code. NUMBER
-        thCodeBtn.addEventListener("click", (e) => {
+        // Add buttons to cols container.
+        tdCode.appendChild(tdCodeButton);
+        tdName.appendChild(tdNameButton);
+        tdPrice.appendChild(tdPriceButton);
+        tdCategory.appendChild(tdCategoryButton);
+
+        // Add items to row container.
+        tr.appendChild(tdCode);
+        tr.appendChild(tdName);
+        tr.appendChild(tdPrice);
+        tr.appendChild(tdCategory);
+        tr.appendChild(tdActions);
+
+        // Add containe to default list.
+        this.productsList.appendChild(tr);
+
+        // -- ADD LISTENERS (for CODE, NAME, PRICE AND CATEGORY) --
+
+        // Code.
+        tdCodeButton.addEventListener("click", (e) => {
+
+            console.log("tdCodeButton Clicked.");
 
             // If array is empty, don't sort.
-            if (this.productsFiltered.length === 0) {
+            if (productsList.length === 0) {
 
                 console.log("LIST IS EMPTY");
                 return;
@@ -278,31 +347,32 @@ class View {
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                this.productsFiltered.sort((a, b) => {
+                productsList.sort((a, b) => {
 
                     return a.code - b.code;
                 });
 
             } else {
 
-                this.productsFiltered.reverse();
+                productsList.reverse();
             }
 
-            // Update array.
-            this.renderProductsList(this.productsFiltered, false);
+            this.renderProductsList(productsList, false);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
-        // Sort using name. STRING
-        thNameBtn.addEventListener("click", (e) => {
+        // Name.
+        tdNameButton.addEventListener("click", (e) => {
+
+            console.log("tdNameButton Clicked.");
 
             // If array is empty, don't sort.
-            if (this.productsFiltered.length === 0) return;
+            if (productsList.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                this.productsFiltered.sort((a, b) => {
+                productsList.sort((a, b) => {
 
                     if (a.name < b.name) return - 1;
                     if (a.name > b.name) return 1;
@@ -311,48 +381,52 @@ class View {
 
             } else {
 
-                this.productsFiltered.reverse();
+                productsList.reverse();
             }
 
             // Update array.
-            this.renderProductsList(this.productsFiltered, false);
+            this.renderProductsList(productsList, false);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
-        // Sort using price. NUMBER
-        thPriceBtn.addEventListener("click", (e) => {
+        // Price.
+        tdPriceButton.addEventListener("click", (e) => {
+
+            console.log("tdPriceButton Clicked.");
 
             // If array is empty, don't sort.
-            if (this.productsFiltered.length === 0) return;
+            if (productsList.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                this.productsFiltered.sort((a, b) => {
+                productsList.sort((a, b) => {
 
                     return a.price - b.price;
                 });
 
             } else {
 
-                this.productsFiltered.reverse();
+                productsList.reverse();
             }
 
             // Update array.
-            this.renderProductsList(this.productsFiltered, false);
+            this.renderProductsList(productsList, false);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
-        // Sort using category. STRING
-        thCategoryBtn.addEventListener("click", (e) => {
+        // Category.
+        tdCategoryButton.addEventListener("click", (e) => {
+
+            console.log("tdCategoryButton Clicked.");
 
             // If array is empty, don't sort.
-            if (this.productsFiltered.length === 0) return;
+            if (productsList.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                this.productsFiltered.sort((a, b) => {
+                productsList.sort((a, b) => {
 
                     if (a.category < b.category) return - 1;
                     if (a.category > b.category) return 1;
@@ -361,80 +435,59 @@ class View {
 
             } else {
 
-                this.productsFiltered.reverse();
+                productsList.reverse();
             }
 
             // Update array.
-            this.renderProductsList(this.productsFiltered, false);
+            this.renderProductsList(productsList, false);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
-        // Set values for buttons.
-        thCodeBtn.innerText = "Code";
-        thNameBtn.innerText = "Product";
-        thPriceBtn.innerText = "Price";
-        thCategoryBtn.innerText = "Category";
-        thActions.innerText = "Actions";
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-        // Add buttons to cols.
-        thCode.appendChild(thCodeBtn);
-        thName.appendChild(thNameBtn);
-        thPrice.appendChild(thPriceBtn);
-        thCategory.appendChild(thCategoryBtn);
+        // -- ADD ITEMS TO LIST --
 
-        // Create items.
-        trHead.appendChild(thCode);
-        trHead.appendChild(thName);
-        trHead.appendChild(thPrice);
-        trHead.appendChild(thCategory);
-        trHead.appendChild(thActions);
+        // Add every item to HTML list.
+        productsList.forEach((product) => {
 
-        tHead.appendChild(trHead);
-        this.productsList.appendChild(tHead);
-
-        // Loop products to add all elements.
-        products.forEach((product) => {
-
-            // Create HTML elements.
+            // Create row container.
             let tr = document.createElement("tr");
 
+            // Create cols items.
             let tdCode = document.createElement("td");
-            let tdProduct = document.createElement("td");
+            let tdName = document.createElement("td");
             let tdPrice = document.createElement("td");
             let tdCategory = document.createElement("td");
             let tdActions = document.createElement("td");
 
-            let actionsBtn = document.createElement("button");
+            // Create button for actions td.
+            let deleteButton = document.createElement("button");
 
-            // Add CSS class for styling.
-            tr.classList.add("products-list-item");
-
-            // Set data and values.
+            // Set cols values.
             tdCode.innerText = `${product.code}`;
-            tdProduct.innerText = `${product.name}`;
+            tdName.innerText = `${product.name}`;
             tdPrice.innerText = `${product.price}`;
             tdCategory.innerText = `${product.category}`;
-            actionsBtn.innerText = "Delete";
+            deleteButton.innerHTML = "Delete";
 
-            // Create items.
-            tdActions.appendChild(actionsBtn);
+            // Add button to las td.
+            tdActions.appendChild(deleteButton);
+
+            // Add items to row container.
             tr.appendChild(tdCode);
-            tr.appendChild(tdProduct);
+            tr.appendChild(tdName);
             tr.appendChild(tdPrice);
             tr.appendChild(tdCategory);
             tr.appendChild(tdActions);
 
-            // Add item to list.
+            // Add containe to default list.
             this.productsList.appendChild(tr);
 
-            // Add listener to delete products.
-            actionsBtn.addEventListener("click", (e) => {
+            deleteButton.addEventListener("click", (e) => {
 
                 app.deleteProduct(product.id);
+                this.loadFilteredList();
             });
         });
     }
-
-    // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
-
 }
