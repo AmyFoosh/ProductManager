@@ -25,10 +25,24 @@ class Model {
 
         // -- CREATING AND STORING DATA --
 
+        // Create new ID.
+        let id = products.length;
+        let idDuplicate;
+
+        do {
+
+            idDuplicate = products.some(product => id === product.id);
+            console.log("ID Duplicate: " + idDuplicate);
+            if (idDuplicate) id++;
+
+        } while (idDuplicate);
+
+
+
         // Create product object.
         let product = {
 
-            id: products.length,
+            id: id,
             code: productCode,
             name: productName,
             price: productPrice,
@@ -47,6 +61,8 @@ class Model {
 
         console.log("Added:");
         console.log(product);
+        console.log("Products:");
+        console.log(products);
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
     }
@@ -71,6 +87,31 @@ class Model {
     getProducts() {
 
         return JSON.parse(localStorage.getItem("products"));
+    }
+
+    updateProduct(id, productCode, productName, productPrice, productCategory) {
+
+        // Get access to localStorage items.
+        let products = JSON.parse(localStorage.getItem("products"));
+
+        // Find product for id and replace data.
+        let product = products.find(p => id === p.id);
+
+        console.log("------------");
+        console.log("Find Item:");
+        console.log(product);
+        console.log("Replace Data:");
+        product.code = productCode;
+        product.name = productName;
+        product.price = productPrice;
+        product.category = productCategory;
+        console.log(product);
+        console.log("------------");
+
+        console.log(products);
+
+        // Save changes.
+        localStorage.setItem("products", JSON.stringify(products));
     }
 
     // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 

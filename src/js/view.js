@@ -4,57 +4,106 @@ class View {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
-        // -- TEMPORARY LIST --
-
+        // Temporary array list to avoid calling model every time.
         this.productsListTemporary = [];
+
+        // Sorting mode for list on code, name, price and category.
         this.sortModeAlphabetical = true;
+
+        // Current element being updated.
+        this.currentProductID;
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
-        // -- LOAD HTML ELEMENTS --
+        // -- ACCESS TO HTML ELEMENTS --
 
-        // Access to elements on Add Product.
+        // Access to Add Product elements.
+        this.addProductContainer = document.getElementById("add-product-container");
+        this.addProductTitle = document.getElementById("add-product-title");
         this.productCodeInput = document.getElementById("product-code-input");
         this.productNameInput = document.getElementById("product-name-input");
         this.productPriceInput = document.getElementById("product-price-input");
         this.productCategorySelect = document.getElementById("product-category-select");
         this.productBtn = document.getElementById("product-btn");
+        this.updateBtn = document.getElementById("update-product-btn");
 
-        // Acces to elements on Search Product.
+        // Add options to select.
+        this.addCategorySelectItems(this.productCategorySelect);
+
+        // Acces to Search Product Elements.
         this.searchCategoryInput = document.getElementById("search-category-input");
         this.searchCategorySelect = document.getElementById("search-category-select");
         this.clearBtn = document.getElementById("clear-btn");
 
-        // Load options on select.
-        this.addCategoryItems(this.productCategorySelect);
-        this.addCategoryItems(this.searchCategorySelect);
+        // Add options to select.
+        this.addCategorySelectItems(this.searchCategorySelect);
 
-        // Access to display list.
+        // Access to display products list.
         this.productsList = document.getElementById("products-container");
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 
-        // -- ADD LISTENERS (for add product) --
+        // -- ADD LISTENERS --
 
-        // Add product when clicking button.
+        // Listeners for Add Product menu.
+
+        // Add product.
         this.productBtn.addEventListener("click", (e) => {
 
-            this.addProduct();
+            // Call controller to add product.
+            app.createProduct(
+                this.productCodeInput.value,
+                this.productNameInput.value,
+                this.productPriceInput.value,
+                this.productCategorySelect.value
+            );
+
+            // Clear values for Add Product menu.
+            this.productCodeInput.value = "";
+            this.productNameInput.value = "";
+            this.productPriceInput.value = "";
+            this.productCategorySelect.selectedIndex = 0;
+
+            // Update list.
+            this.loadFilteredList();
         });
 
-        // Add product when pressing enter.
-        addEventListener("keydown", (e) => {
+        // Update product.
+        this.updateBtn.addEventListener("click", (e) => {
 
-            // Check when user hits enter.
-            if (e.key === "Enter") this.addProduct();
+            console.log("Update Clicked.");
 
-            // Prevent CTRL + S.
-            if (e.ctrlKey && e.key === "s") e.preventDefault();
+            let productCode = this.productCodeInput.value.trim().toLowerCase();
+            let productName = this.productNameInput.value.trim().toLowerCase();
+            let productPrice = this.productPriceInput.value.trim().toLowerCase();
+            let productCategory = this.productCategorySelect.value;
+
+            app.updateProduct(
+                this.currentProductID,
+                productCode,
+                productName,
+                productPrice,
+                productCategory
+            );
+
+            // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+            // Load data into HTMl elements.
+            this.addProductTitle.innerText = "Add Product";
+
+            this.productBtn.style.display = "inline";
+            this.updateBtn.style.display = "none";
+
+            this.loadFilteredList();
+
+            // Clear values for Add Product menu.
+            this.productCodeInput.value = "";
+            this.productNameInput.value = "";
+            this.productPriceInput.value = "";
+            this.productCategorySelect.selectedIndex = 0;
         });
 
-        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
-
-        // -- ADD LISTENERS (for search product) --
+        // Listeners for Search Product menu.
 
         // Input search filter.
         this.searchCategoryInput.addEventListener("input", (e) => {
@@ -78,121 +127,39 @@ class View {
             // Reload list.
             this.renderProductsList(this.productsListTemporary, false);
         });
-
-        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
     }
 
-    addCategoryItems(selectHTML) {
+    addCategorySelectItems(selectHTML) {
 
-        // Create all categories for category options.
-        let categoryItems = {
+        // Create all categories avaiables.
+        let categories = [
+            "all",
+            "beauty",
+            "kitchen",
+            "bedroom",
+            "bathroom",
+            "garden",
+            "lights",
+            "tools",
+            "food",
+            "shoes",
+            "clothes",
+            "pets",
+            "toys",
+            "plushies",
+            "furniture",
+            "homeAppliances",
+            "camping",
+            "sports"
+        ];
 
-            all: "all",
-            beauty: "beauty",
-            kitchen: "kitchen",
-            bedroom: "bedroom",
-            bathroom: "bathroom",
-            garden: "garden",
-            lights: "lights",
-            tools: "tools",
-            food: "food",
-            shoes: "shoes",
-            clothes: "clothes",
-            pets: "pets",
-            toys: "toys",
-            plushies: "plushies",
-            furniture: "furniture",
-            homeAppliances: "home appliances",
-            camping: "camping",
-            sports: "sports"
-        };
+        // Add categories to HTML select.
+        categories.forEach((category) => {
 
-        // Create options elements.
-        let allCategory = document.createElement("option");
-        let beautyCategory = document.createElement("option");
-        let kitchenCategory = document.createElement("option");
-        let bedroomCategory = document.createElement("option");
-        let bathroomCategory = document.createElement("option");
-        let gardenCategory = document.createElement("option");
-        let lightsCategory = document.createElement("option");
-        let toolsCategory = document.createElement("option");
-        let foodCategory = document.createElement("option");
-        let shoesCategory = document.createElement("option");
-        let clothesCategory = document.createElement("option");
-        let petsCategory = document.createElement("option");
-        let toysCategory = document.createElement("option");
-        let plushiesCategory = document.createElement("option");
-        let furnitureCategory = document.createElement("option");
-        let homeAppliancesCategory = document.createElement("option");
-        let campingCategory = document.createElement("option");
-        let sportsCategory = document.createElement("option");
-
-        // Add text.
-        allCategory.innerText = categoryItems.all;
-        beautyCategory.innerText = categoryItems.beauty;
-        kitchenCategory.innerText = categoryItems.kitchen;
-        bedroomCategory.innerText = categoryItems.bedroom;
-        bathroomCategory.innerText = categoryItems.bathroom;
-        gardenCategory.innerText = categoryItems.garden;
-        lightsCategory.innerText = categoryItems.lights;
-        toolsCategory.innerText = categoryItems.tools;
-        foodCategory.innerText = categoryItems.food;
-        shoesCategory.innerText = categoryItems.shoes;
-        clothesCategory.innerText = categoryItems.clothes;
-        petsCategory.innerText = categoryItems.pets;
-        toysCategory.innerText = categoryItems.toys;
-        plushiesCategory.innerText = categoryItems.plushies;
-        furnitureCategory.innerText = categoryItems.furniture;
-        homeAppliancesCategory.innerText = categoryItems.homeAppliances;
-        campingCategory.innerText = categoryItems.camping;
-        sportsCategory.innerText = categoryItems.sports;
-
-        // Add options elements to category.
-        selectHTML.appendChild(allCategory);
-        selectHTML.appendChild(beautyCategory);
-        selectHTML.appendChild(kitchenCategory);
-        selectHTML.appendChild(bedroomCategory);
-        selectHTML.appendChild(bathroomCategory);
-        selectHTML.appendChild(gardenCategory);
-        selectHTML.appendChild(lightsCategory);
-        selectHTML.appendChild(toolsCategory);
-        selectHTML.appendChild(foodCategory);
-        selectHTML.appendChild(shoesCategory);
-        selectHTML.appendChild(clothesCategory);
-        selectHTML.appendChild(petsCategory);
-        selectHTML.appendChild(toysCategory);
-        selectHTML.appendChild(plushiesCategory);
-        selectHTML.appendChild(furnitureCategory);
-        selectHTML.appendChild(homeAppliancesCategory);
-        selectHTML.appendChild(campingCategory);
-        selectHTML.appendChild(sportsCategory);
-    }
-
-    addProduct() {
-
-        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-
-        // -- ADD NEW PRODUCT --
-
-        // Call function to create product.
-        app.createProduct(
-            this.productCodeInput.value,
-            this.productNameInput.value,
-            this.productPriceInput.value,
-            this.productCategorySelect.value
-        );
-
-        // Clear values for Add Product menu.
-        this.productCodeInput.value = "";
-        this.productNameInput.value = "";
-        this.productPriceInput.value = "";
-        this.productCategorySelect.selectedIndex = 0;
-
-        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-
-        this.loadFilteredList();
-
-        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+            let item = document.createElement("option");
+            item.innerText = category;
+            selectHTML.appendChild(item);
+        });
     }
 
     loadFilteredList() {
@@ -243,11 +210,8 @@ class View {
 
             // -- FILTER ALL ITEMS --
 
-            // If search field is empty, add all items.
-            if (this.searchCategoryInput.value === "") return product;
-
-             // Get Search input value.
-             let inputValue = this.searchCategoryInput.value.toLowerCase();
+            // Get Search input value.
+            let inputValue = this.searchCategoryInput.value.toLowerCase();
 
             // -- FILTER BY CODE --
 
@@ -270,22 +234,17 @@ class View {
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
     }
 
-    renderProductsList(productsList, updateList = true) {
+    renderProductsList(products, updateList = true) {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-        // -- UPDATE LIST IN CASE updateList IS TRUE --
-
-        if (updateList) this.productsListTemporary = productsList.slice(0);
-
-        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-
-        // -- CLEAR VALUES --
-
-        console.log("Rendering product list.");
-
-        // Clear products list HTML.
+        // Clear list.
         this.productsList.innerHTML = "";
+
+        if (updateList) this.productsListTemporary = products.slice(0);
+
+        console.log("Loading Products List");
+        console.log(products);
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
@@ -330,49 +289,42 @@ class View {
         // Add containe to default list.
         this.productsList.appendChild(tr);
 
-        // -- ADD LISTENERS (for CODE, NAME, PRICE AND CATEGORY) --
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-        // Code.
+        // -- SORTING LIST LISTENERS --
+
         tdCodeButton.addEventListener("click", (e) => {
 
-            console.log("tdCodeButton Clicked.");
-
             // If array is empty, don't sort.
-            if (productsList.length === 0) {
-
-                console.log("LIST IS EMPTY");
-                return;
-            }
+            if (products.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                productsList.sort((a, b) => {
+                products.sort((a, b) => {
 
                     return a.code - b.code;
                 });
 
             } else {
 
-                productsList.reverse();
+                products.reverse();
             }
 
-            this.renderProductsList(productsList, false);
+            this.renderProductsList(products);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
         // Name.
         tdNameButton.addEventListener("click", (e) => {
 
-            console.log("tdNameButton Clicked.");
-
             // If array is empty, don't sort.
-            if (productsList.length === 0) return;
+            if (products.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                productsList.sort((a, b) => {
+                products.sort((a, b) => {
 
                     if (a.name < b.name) return - 1;
                     if (a.name > b.name) return 1;
@@ -381,37 +333,35 @@ class View {
 
             } else {
 
-                productsList.reverse();
+                products.reverse();
             }
 
             // Update array.
-            this.renderProductsList(productsList, false);
+            this.renderProductsList(products);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
         // Price.
         tdPriceButton.addEventListener("click", (e) => {
 
-            console.log("tdPriceButton Clicked.");
-
             // If array is empty, don't sort.
-            if (productsList.length === 0) return;
+            if (products.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                productsList.sort((a, b) => {
+                products.sort((a, b) => {
 
                     return a.price - b.price;
                 });
 
             } else {
 
-                productsList.reverse();
+                products.reverse();
             }
 
             // Update array.
-            this.renderProductsList(productsList, false);
+            this.renderProductsList(products);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
@@ -421,12 +371,12 @@ class View {
             console.log("tdCategoryButton Clicked.");
 
             // If array is empty, don't sort.
-            if (productsList.length === 0) return;
+            if (products.length === 0) return;
 
             // Sort array.
             if (this.sortModeAlphabetical) {
 
-                productsList.sort((a, b) => {
+                products.sort((a, b) => {
 
                     if (a.category < b.category) return - 1;
                     if (a.category > b.category) return 1;
@@ -435,20 +385,22 @@ class View {
 
             } else {
 
-                productsList.reverse();
+                products.reverse();
             }
 
             // Update array.
-            this.renderProductsList(productsList, false);
+            this.renderProductsList(products);
             this.sortModeAlphabetical = (this.sortModeAlphabetical) ? false : true;
         });
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
-        // -- ADD ITEMS TO LIST --
+        // Load list items.
+        products.forEach((product) => {
 
-        // Add every item to HTML list.
-        productsList.forEach((product) => {
+            // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+            // -- CREATE ITEMS DISPLAY --
 
             // Create row container.
             let tr = document.createElement("tr");
@@ -460,17 +412,24 @@ class View {
             let tdCategory = document.createElement("td");
             let tdActions = document.createElement("td");
 
-            // Create button for actions td.
+            // Create buttons for actions td.
+            let updateButton = document.createElement("button");
             let deleteButton = document.createElement("button");
+
+            // Add styles to buttons.
+            updateButton.classList.add("update-list-buttons");
+            deleteButton.classList.add("delete-list-buttons");
 
             // Set cols values.
             tdCode.innerText = `${product.code}`;
             tdName.innerText = `${product.name}`;
             tdPrice.innerText = `${product.price}`;
             tdCategory.innerText = `${product.category}`;
+            updateButton.innerHTML = "Update";
             deleteButton.innerHTML = "Delete";
 
             // Add button to las td.
+            tdActions.appendChild(updateButton);
             tdActions.appendChild(deleteButton);
 
             // Add items to row container.
@@ -480,14 +439,66 @@ class View {
             tr.appendChild(tdCategory);
             tr.appendChild(tdActions);
 
-            // Add containe to default list.
+            // Add container to default list.
             this.productsList.appendChild(tr);
 
+            // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+            // -- ADD ITEMS LISTENERS --
+
+            // Update item.
+            updateButton.addEventListener("click", (e) => {
+
+                // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+                // -- GET ITEM DATA --
+
+                console.log("Update. Product ID: " + product.id);
+
+                this.currentProductID = product.id;
+
+                console.log("CURRENT PRODUCT ID");
+                console.log(this.currentProductID);
+
+                // Load data into HTMl elements.
+                this.addProductTitle.innerText = "Update Product";
+                this.productCodeInput.value = `${product.code}`;
+                this.productNameInput.value = `${product.name}`;
+                this.productPriceInput.value = `${product.price}`;
+
+                // Add category selected to HTML select.
+                for (let i = 0; i < this.productCategorySelect.options.length; i++) {
+
+                    if (product.category === this.productCategorySelect.options[i].value) {
+
+                        console.log("Category Match Found.");
+                        this.productCategorySelect.selectedIndex = i;
+                        break;
+                    }
+                }
+
+                // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+
+                // -- CHANGE TO UPATE DISPLAY --
+
+                this.productBtn.style.display = "none";
+                this.updateBtn.style.display = "inline";
+
+                // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+            });
+
+            // Delete Item.
             deleteButton.addEventListener("click", (e) => {
 
+                console.log("Delete. Product ID: " + product.id);
                 app.deleteProduct(product.id);
                 this.loadFilteredList();
             });
+
+            // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
         });
+
+        // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
     }
+
 }

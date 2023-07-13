@@ -46,5 +46,12 @@ class Controller {
         this.view.renderProductsList(this.model.getProducts());
     }
 
+    updateProduct(id, productCode, productName, productPrice, productCategory) {
+
+        console.log("Data received.");
+        this.model.updateProduct(id, productCode, productName, productPrice, productCategory);
+        this.view.renderProductsList(this.model.getProducts());
+    }
+
     // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 }
