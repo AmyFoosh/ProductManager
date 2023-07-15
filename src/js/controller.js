@@ -19,15 +19,15 @@ class Controller {
 
         // -- VALIDATIONS --
 
+        // Remove all items spaces, lower case and with no empty spaces.
+        productCode = productCode.trim().toLowerCase().replaceAll(" ", "");
+        productName = productName.trim().toLowerCase();
+        productPrice = productPrice.trim().toLowerCase().replaceAll(" ", "");
+
         // Check if inputs are empty.
         if (productCode.trim() === "") return;
         if (productName.trim() === "") return;
         if (productPrice.trim() === "") return;
-
-        // Remove spaces from code.
-        productCode = productCode.replaceAll(" ", "");
-        // Make all products lower-case.
-        productName = productName.toLowerCase();
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
 

@@ -26,6 +26,7 @@ class View {
         this.productCategorySelect = document.getElementById("product-category-select");
         this.productBtn = document.getElementById("product-btn");
         this.updateBtn = document.getElementById("update-product-btn");
+        this.cancelUpdateBtn = document.getElementById("cancel-update-product-btn");
 
         // Add options to select.
         this.addCategorySelectItems(this.productCategorySelect);
@@ -88,11 +89,31 @@ class View {
 
             // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
+            // Load data into HTML elements.
+            this.addProductTitle.innerText = "Add Product";
+
+            this.productBtn.style.display = "inline";
+            this.updateBtn.style.display = "none";
+            this.cancelUpdateBtn.style.display = "none";
+
+            this.loadFilteredList();
+
+            // Clear values for Add Product menu.
+            this.productCodeInput.value = "";
+            this.productNameInput.value = "";
+            this.productPriceInput.value = "";
+            this.productCategorySelect.selectedIndex = 0;
+        });
+
+        // Cancel update and go back to Add Product Menu.
+        this.cancelUpdateBtn.addEventListener("click", (e) => {
+
             // Load data into HTMl elements.
             this.addProductTitle.innerText = "Add Product";
 
             this.productBtn.style.display = "inline";
             this.updateBtn.style.display = "none";
+            this.cancelUpdateBtn.style.display = "none";
 
             this.loadFilteredList();
 
@@ -129,6 +150,7 @@ class View {
         });
     }
 
+    // Load options for HTML select's.
     addCategorySelectItems(selectHTML) {
 
         // Create all categories avaiables.
@@ -162,6 +184,7 @@ class View {
         });
     }
 
+    // Refresh products table using data from "Search Product" menu.
     loadFilteredList() {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
@@ -234,6 +257,7 @@ class View {
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- 
     }
 
+    // Refresh products table, using data from model.js
     renderProductsList(products, updateList = true) {
 
         // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
@@ -483,6 +507,7 @@ class View {
 
                 this.productBtn.style.display = "none";
                 this.updateBtn.style.display = "inline";
+                this.cancelUpdateBtn.style.display = "inline";
 
                 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
             });
